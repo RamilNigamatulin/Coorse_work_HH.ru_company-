@@ -1,12 +1,13 @@
 import requests
 
+
 class HeadHunterAPI():
     """Класс для работы с API HeadHunter."""
     def __init__(self):
         self.url = 'https://api.hh.ru/'
         self.headers = {'User-Agent': 'HH-User-Agent'}
         self.employers = [
-            'ДубльГИС       ',
+            'ДубльГИС',
             'QIWI',
             'СберМаркет',
             'КРОК',
@@ -22,10 +23,19 @@ class HeadHunterAPI():
         """Получение информации о работодателях"""
         employers_info = []
         for employer_name in self.employers:
-            params = {'text': employer_name, 'sort_by': 'by_name', 'page': 0, 'per_page': 1}
+            params = {
+                    'text': employer_name,
+                    'sort_by': 'by_name',
+                    'page': 0,
+                    'per_page': 1
+                }
 
             try:
-                response = requests.get(f"{self.url}employers", headers=self.headers, params=params)
+                response = requests.get(
+                        f"{self.url}employers",
+                        headers=self.headers,
+                        params=params
+                    )
                 response.raise_for_status()
                 data = response.json()
                 if data['found'] > 0:
@@ -34,10 +44,15 @@ class HeadHunterAPI():
                     open_vacancies = data['items'][0]['open_vacancies']
 
                     # Получаем полную информацию о работодателе
-                    employer_response = requests.get(f"{self.url}employers/{employer_id}", headers=self.headers)
+                    employer_response = requests.get(
+                            f"{self.url}employers/{employer_id}",
+                            headers=self.headers
+                        )
                     employer_response.raise_for_status()
                     employer_data = employer_response.json()
-                    description = employer_data.get('description', 'Нет описания')
+                    description = employer_data.get(
+                            'description', 'Нет описания'
+                        )
 
                     employer_info = {
                             'employer_id': employer_id,
@@ -66,7 +81,11 @@ class HeadHunterAPI():
         }
 
         try:
-            response = requests.get(f"{self.url}vacancies", headers=self.headers, params=params)
+            response = requests.get(
+                    f"{self.url}vacancies",
+                    headers=self.headers,
+                    params=params
+                )
             response.raise_for_status()
             return response.json()['items']
         except requests.RequestException as e:
@@ -91,7 +110,12 @@ class HeadHunterAPI():
                     'salary_from': vacancy['salary']['from'],
                     'salary_to': vacancy['salary']['to'],
                     'area': vacancy['area']['name'],
-                    'description': vacancy.get('snippet', {}).get('responsibility', 'Описание отсутствует')
+                    'description': vacancy.get(
+                        'snippet', {}
+                    ).get(
+                        'responsibility',
+                        'Описание отсутствует'
+                    )
                 }
                 vacancies_list.append(vacancy_details)
         return vacancies_list

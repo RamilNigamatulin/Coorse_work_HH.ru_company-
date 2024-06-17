@@ -1,5 +1,5 @@
-from utils import HeadHunterAPI
-from dbmanager import DBManager
+from API.api import HeadHunterAPI
+from vacancy_management.dbmanager import DBManager
 
 
 def main():
@@ -40,10 +40,12 @@ def main():
     for i, result in enumerate(results[:], start=1):
         print(f'{i}. {result[1]}')
 
-    user_input = input('Введите необходимые условия поиска: (например "python").\n'
-                       'В случае нежелания дальнейшего поиска, введите слово "exit":  ')
+    user_input = input(
+        'Введите необходимые условия поиска: (например "python").\n'
+        'В случае нежелания дальнейшего поиска, введите слово "exit":  '
+    )
     if user_input == 'exit':
-        pass
+        exit()
     else:
         results = db_manager.get_vacancies_with_keyword(user_input)
         for i, result in enumerate(results[:], start=1):
